@@ -4,9 +4,131 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>P2P Platform</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460, #533483);
+      color: #fff;
+      text-align: center;
+    }
+    header {
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    section {
+      padding: 30px 20px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 15px auto;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px;
+      transition: 0.3s;
+    }
+    button:hover {
+      opacity: 0.85;
+    }
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-  <h1>Welcome to My P2P Referral Earning Platform 🚀</h1>
-  <p>This site is hosted on GitHub Pages - Free & Lifetime!</p>
+  <header>🚀 Welcome to P2P Referral Earning Platform</header>
+
+  <!-- Welcome Page -->
+  <section id="welcome">
+    <h2>About Us</h2>
+    <p>Decentralized P2P referral earning system with token rewards.</p>
+    <button onclick="showPage('wallet')">Connect Wallet</button>
+  </section>
+
+  <!-- Wallet Page -->
+  <section id="wallet" class="hidden">
+    <h2>🔗 Connect Your Wallet</h2>
+    <button onclick="connectWallet()">Connect MetaMask</button>
+    <p id="walletAddress"></p>
+    <button onclick="showPage('donate')">Next → Donate</button>
+  </section>
+
+  <!-- Donate Page -->
+  <section id="donate" class="hidden">
+    <h2>💝 Donate for Society</h2>
+    <div class="card">
+      <p>Select Package:</p>
+      <button>$50</button>
+      <button>$100</button>
+      <button>$500</button>
+    </div>
+    <button onclick="showPage('dashboard')">Go to Dashboard</button>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dashboard" class="hidden">
+    <h2>📊 My Dashboard</h2>
+    <div class="card">
+      <h3>P2P Token Balance</h3>
+      <p id="tokenBalance">0 P2P</p>
+    </div>
+    <div class="card">
+      <h3>👥 My Team</h3>
+      <p>Direct Team: <span id="directTeam">0</span></p>
+      <p>Total Members: <span id="totalMembers">0</span></p>
+      <p>Total Earnings: $<span id="totalEarnings">0</span></p>
+    </div>
+  </section>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="#" onclick="showPage('welcome')">Home</a>
+    <a href="#" onclick="showPage('dashboard')">Team</a>
+    <a href="#">Profile</a>
+    <a href="#">History</a>
+    <a href="#">Logout</a>
+  </nav>
+
+  <script>
+    function showPage(pageId) {
+      document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
+      document.getElementById(pageId).classList.remove("hidden");
+    }
+
+    async function connectWallet() {
+      if (window.ethereum) {
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        document.getElementById("walletAddress").innerText = "Connected: " + accounts[0];
+      } else {
+        alert("Please install MetaMask!");
+      }
+    }
+  </script>
 </body>
 </html>
