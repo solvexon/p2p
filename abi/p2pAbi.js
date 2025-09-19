@@ -1,3 +1,4 @@
+export const P2P_ABI = [
 [
 	{
 		"inputs": [
