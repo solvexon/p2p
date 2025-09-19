@@ -1,5 +1,6 @@
-// ---- Global Constants and Imports ----
-// These files must be created separately
+// ==============================
+// Global Constants and Imports
+// ==============================
 import { MYUSDT_ABI } from './abi/myusdtAbi.js';
 import { P2P_ABI } from './abi/p2pAbi.js';
 import { REFERRAL_SYSTEM_ABI } from './abi/referralSystemAbi.js';
@@ -16,10 +17,13 @@ const PACKAGE_PRICE_USD = 125;
 const P2P_TOKENS_PER_PACKAGE = 2;
 const TOTAL_VESTING_DAYS = 430;
 
+// ---- Web3 variables ----
 let provider, signer, userAddress;
 let myusdtContract, p2pContract, referralSystemContract;
 
-// ---- UI Elements ----
+// ==============================
+// UI Elements
+// ==============================
 const connectWalletBtn = document.getElementById("connectWalletBtn");
 const connectWalletMetaMaskBtn = document.getElementById("connectWalletMetaMaskBtn");
 const continueToDonateBtn = document.getElementById("continueToDonateBtn");
@@ -39,12 +43,23 @@ const claimAwardBtn2 = document.getElementById("claimAwardBtn2");
 const claimAwardBtn3 = document.getElementById("claimAwardBtn3");
 const buyPackageBtn = document.getElementById("buyPackageBtn");
 
-// ---- Utils ----
+// ==============================
+// Utility Functions
+// ==============================
 function truncateAddress(addr) {
-    return addr.slice(0, 6) + "..." + addr.slice(-4);
+    return addr ? addr.slice(0, 6) + "..." + addr.slice(-4) : "";
 }
 
-// ---- Connect Wallet ----
+function showPage(pageId) {
+    document.querySelectorAll(".page").forEach(page => {
+        page.style.display = "none";
+    });
+    document.getElementById(pageId).style.display = "block";
+}
+
+// ==============================
+// Connect Wallet
+// ==============================
 async function connectWallet() {
     if (!isMetaMaskInstalled) {
         alert("Please install MetaMask first!");
@@ -72,7 +87,9 @@ async function connectWallet() {
     }
 }
 
-// ---- Load User Data ----
+// ==============================
+// Load User Data
+// ==============================
 async function loadUserData() {
     if (!userAddress || !referralSystemContract) return;
 
@@ -127,7 +144,9 @@ async function loadUserData() {
     }
 }
 
-// ---- Buy Package ----
+// ==============================
+// Buy Package
+// ==============================
 buyPackageBtn.addEventListener("click", async () => {
     try {
         const amount = ethers.utils.parseUnits(PACKAGE_PRICE_USD.toString(), 18);
@@ -147,7 +166,9 @@ buyPackageBtn.addEventListener("click", async () => {
     }
 });
 
-// ---- Claim Tokens ----
+// ==============================
+// Claim Tokens
+// ==============================
 claimTokensBtn.addEventListener("click", async () => {
     try {
         const tx = await referralSystemContract.claimTokens();
@@ -159,7 +180,9 @@ claimTokensBtn.addEventListener("click", async () => {
     }
 });
 
-// ---- Claim Awards ----
+// ==============================
+// Claim Awards
+// ==============================
 claimAwardBtn1.addEventListener("click", async () => {
     try {
         const tx = await referralSystemContract.claimAward(1);
@@ -190,7 +213,9 @@ claimAwardBtn3.addEventListener("click", async () => {
     }
 });
 
-// ---- Events ----
+// ==============================
+// Events
+// ==============================
 connectWalletBtn.addEventListener("click", connectWallet);
 connectWalletMetaMaskBtn.addEventListener("click", connectWallet);
 continueToDonateBtn.addEventListener("click", () => showPage("donate"));
