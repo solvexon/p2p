@@ -1,25 +1,29 @@
-// --- Global Variables and Constants ---
+// --- Global Constants and Imports ---
+// These files must be created separately
+import { MYUSDT_ABI } from './abi/myusdtAbi.js';
+import { P2P_ABI } from './abi/p2pAbi.js';
+import { REFERRAL_SYSTEM_ABI } from './abi/referralSystemAbi.js';
+
 const { ethers } = window;
 const isMetaMaskInstalled = typeof window.ethereum !== 'undefined';
 
-// Replace with your actual deployed contract addresses and ABIs
+// Your deployed contract addresses
 const MYUSDT_CONTRACT_ADDRESS = "0x2AEF42da66D2ef5C88C45953d6FDDc25DE23dd23";
 const P2P_CONTRACT_ADDRESS = "0x6d7249567a622DaEC24445537f401735b3033b0B";
 const REFERRAL_SYSTEM_CONTRACT_ADDRESS = "0x6a873214c30efdcc8c5a7580f69a1ef2699ad08c";
 
-// Paste your contract ABIs here
-const MYUSDT_ABI = [];
-const P2P_ABI = [];
-const REFERRAL_SYSTEM_ABI = [];
+const PACKAGE_PRICE_USD = 125;
+const P2P_TOKENS_PER_PACKAGE = 2;
+const TOTAL_VESTING_DAYS = 430;
 
 let provider, signer, userAddress;
 let myusdtContract, p2pContract, referralSystemContract;
 
-// Referral Link Check
+// Get referrer address from URL or set to a zero address
 const urlParams = new URLSearchParams(window.location.search);
 const referrerAddress = urlParams.get('ref') || ethers.constants.AddressZero;
 
-// --- DOM Elements ---
+// --- DOM Element References ---
 const connectWalletBtn = document.getElementById('connectWalletBtn');
 const connectWalletMetaMaskBtn = document.getElementById('connectWalletMetaMaskBtn');
 const continueToDonateBtn = document.getElementById('continueToDonateBtn');
@@ -28,6 +32,7 @@ const walletAddressContainer = document.getElementById('walletAddress');
 const buyPackageBtn = document.getElementById('buyPackageBtn');
 const allocatedTokensDisplay = document.getElementById('allocatedTokens');
 const tokenLockInfoDisplay = document.getElementById('tokenLockInfo');
+const claimableTokensDisplay = document.getElementById('claimableTokens');
 const claimTokensBtn = document.getElementById('claimTokensBtn');
 const directReferralsCountDisplay = document.getElementById('directReferralsCount');
 const teamReferralsCountDisplay = document.getElementById('teamReferralsCount');
@@ -52,11 +57,11 @@ function showPage(pageId) {
 }
 
 function truncateAddress(address) {
+    if (!address) return '';
     return `${address.substring(0, 6)}...${address.slice(-4)}`;
 }
 
 // --- Main Functions ---
-
 async function connectWallet() {
     if (!isMetaMaskInstalled) {
         alert("Please install MetaMask to use this app!");
@@ -82,7 +87,6 @@ async function connectWallet() {
         connectWalletMetaMaskBtn.style.display = 'none';
         continueToDonateBtn.disabled = false;
 
-        // Load all data after connection
         loadUserData();
         showPage('donate');
 
@@ -93,32 +97,46 @@ async function connectWallet() {
 }
 
 async function loadUserData() {
-    if (!userAddress) return;
+    if (!userAddress || !referralSystemContract) return;
 
     try {
-        // Fetch user info from smart contract
         const userInfo = await referralSystemContract.users(userAddress);
-        const [allocatedTokens, remainingDays] = await referralSystemContract.getUserInfo(userAddress);
         
-        // Update Token & Vesting Info
-        allocatedTokensDisplay.textContent = ethers.utils.formatUnits(userInfo.allocatedTokens, 18);
-        const lockPeriodEnd = new Date(userInfo.lockedUntil.toNumber() * 1000);
-        const timeRemaining = Math.max(0, lockPeriodEnd.getTime() - Date.now());
-        const daysRemaining = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24));
-        tokenLockInfoDisplay.textContent = daysRemaining > 0 ? `Locked for ${daysRemaining} more days` : "Unlocking complete!";
+        // Token and vesting info
+        const allocatedTokens = ethers.utils.formatUnits(userInfo.allocatedTokens, 18);
+        allocatedTokensDisplay.textContent = allocatedTokens;
         
-        // Update vesting progress bar
-        const totalVestingDays = 430;
-        const passedDays = totalVestingDays - daysRemaining;
-        const progress = Math.min(100, (passedDays / totalVestingDays) * 100);
-        vestingProgressBar.style.width = `${progress}%`;
+        const lockedUntilTimestamp = userInfo.lockedUntil.toNumber();
+        const nowTimestamp = Math.floor(Date.now() / 1000);
         
-        // Enable claim button if tokens are unlocked and available
-        if (daysRemaining <= 0 && userInfo.allocatedTokens > 0) {
-            claimTokensBtn.disabled = false;
+        if (nowTimestamp < lockedUntilTimestamp) {
+            const remainingSeconds = lockedUntilTimestamp - nowTimestamp;
+            const remainingDays = Math.ceil(remainingSeconds / (60 * 60 * 24));
+            tokenLockInfoDisplay.textContent = `Locked for 430 days, ${remainingDays} days remaining.`;
+            
+            const passedDays = TOTAL_VESTING_DAYS - remainingDays;
+            const progress = Math.min(100, (passedDays / TOTAL_VESTING_DAYS) * 100);
+            vestingProgressBar.style.width = `${progress}%`;
+            claimTokensBtn.disabled = true;
+            claimableTokensDisplay.textContent = "0";
+
+        } else {
+            tokenLockInfoDisplay.textContent = "Lock period completed! You can now claim your tokens.";
+            vestingProgressBar.style.width = `100%`;
+            
+            // Check if there are any allocated tokens remaining
+            const hasTokensToClaim = userInfo.allocatedTokens.gt(0);
+            if (hasTokensToClaim) {
+                claimTokensBtn.disabled = false;
+            }
+            
+            // Calculate claimable tokens (This is a simplified calculation, a real contract would provide this)
+            const vestingPercentagePerInterval = 5;
+            const totalClaimable = (userInfo.totalPackages.toNumber() * P2P_TOKENS_PER_PACKAGE * vestingPercentagePerInterval) / 100;
+            claimableTokensDisplay.textContent = totalClaimable;
         }
 
-        // Fetch Referral Info
+        // Referral info
         const directCount = await referralSystemContract.directReferralCount(userAddress);
         const teamCount = await referralSystemContract.teamReferralCount(userAddress);
         directReferralsCountDisplay.textContent = directCount.toString();
@@ -143,17 +161,17 @@ async function buyPackage() {
         return;
     }
 
-    const packagePrice = ethers.utils.parseUnits("125", 18); // MYUSDT 18 decimals
+    const packagePrice = ethers.utils.parseUnits(PACKAGE_PRICE_USD.toString(), 18);
     
     try {
-        // First, check for USDT approval
+        // Check for MYUSDT approval
         const allowance = await myusdtContract.allowance(userAddress, REFERRAL_SYSTEM_CONTRACT_ADDRESS);
         if (allowance.lt(packagePrice)) {
             const approveTx = await myusdtContract.approve(REFERRAL_SYSTEM_CONTRACT_ADDRESS, packagePrice);
             await approveTx.wait();
         }
 
-        // Then, buy the package
+        // Buy the package
         const buyTx = await referralSystemContract.buyPackage(referrerAddress);
         await buyTx.wait();
 
@@ -229,7 +247,6 @@ if (isMetaMaskInstalled) {
             userAddress = accounts[0];
             loadUserData();
         } else {
-            // User disconnected, reset UI
             showPage('welcome');
         }
     });
