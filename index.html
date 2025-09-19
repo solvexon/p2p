@@ -4,391 +4,179 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>P2P Platform</title>
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Background */
+    /* Background gradient animation */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #090979, #4f0c84, #ff00cc);
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #6a0572);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
       color: #fff;
       text-align: center;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
     header {
       padding: 20px;
       font-size: 26px;
-      font-weight: bold;
+      font-weight: 600;
+      letter-spacing: 1px;
       background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+      backdrop-filter: blur(12px);
     }
+
     section {
-      padding: 30px 20px;
-      flex: 1;
+      padding: 40px 20px 100px;
+      min-height: calc(100vh - 120px);
+      animation: fadeIn 0.6s ease-in-out;
     }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
     .card {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 25px;
       margin: 20px auto;
-      max-width: 400px;
+      max-width: 420px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-      backdrop-filter: blur(12px);
-      transition: transform 0.3s;
+      transition: 0.3s;
     }
     .card:hover {
-      transform: translateY(-5px);
+      transform: scale(1.03);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.6);
     }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    h3 {
+      font-size: 20px;
+      margin: 10px 0;
+    }
+
     button {
-      padding: 12px 25px;
+      padding: 14px 24px;
       border: none;
       border-radius: 12px;
-      background: linear-gradient(90deg, #00dbde, #fc00ff);
+      background: linear-gradient(90deg, #ff6ec4, #7873f5);
       color: #fff;
       font-weight: bold;
-      font-size: 14px;
       cursor: pointer;
-      margin: 8px;
-      transition: all 0.3s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      margin: 10px;
+      font-size: 15px;
+      transition: 0.3s;
+      box-shadow: 0 0 12px rgba(255,110,196,0.6);
     }
     button:hover {
-      transform: scale(1.05);
-      opacity: 0.9;
+      box-shadow: 0 0 22px rgba(120,115,245,0.9);
+      transform: translateY(-2px);
     }
+
     nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
       display: flex;
       justify-content: space-around;
       padding: 12px 0;
-      border-top: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
     nav a {
       color: #fff;
       text-decoration: none;
       font-size: 14px;
-      font-weight: bold;
+      font-weight: 500;
       transition: 0.3s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
     }
     nav a:hover {
-      color: #00dbde;
+      color: #ff6ec4;
     }
-    nav i {
-      font-size: 18px;
-    }
-    h2 {
-      margin-bottom: 15px;
-      font-size: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
+
     .hidden { display: none; }
-    
-    /* Package selection */
-    .package-options {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .package-option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .package-option:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    .package-option.selected {
-      background: rgba(0, 219, 222, 0.2);
-      border: 1px solid #00dbde;
-    }
-    
-    /* Stats in dashboard */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 20px;
-    }
-    .stat-box {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
-    }
-    .stat-value {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 5px 0;
-    }
-    .stat-label {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-    
-    /* Progress bar */
-    .progress-container {
-      width: 100%;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      margin: 15px 0;
-    }
-    .progress-bar {
-      height: 8px;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #00dbde, #fc00ff);
-      width: 0%;
-      transition: width 1s ease-in-out;
-    }
-    
-    /* Notification badge */
-    .badge {
-      background: #ff00cc;
-      color: white;
-      border-radius: 50%;
-      padding: 2px 6px;
-      font-size: 10px;
-      position: absolute;
-      top: -5px;
-      right: -5px;
-    }
-    
-    /* Icon wrapper for notifications */
-    .icon-wrapper {
-      position: relative;
-      display: inline-block;
-    }
   </style>
 </head>
 <body>
-  <header><i class="fas fa-rocket"></i> P2P Referral Earning Platform</header>
+  <header>🌐 P2P Referral Platform</header>
 
   <!-- Welcome Page -->
   <section id="welcome">
-    <h2><i class="fas fa-hand-wave"></i> Welcome</h2>
-    <p>Decentralized P2P earning with multi-level referral & token rewards.</p>
-    <button onclick="showPage('wallet')"><i class="fas fa-link"></i> Connect Wallet</button>
+    <h2>Welcome</h2>
+    <p>Decentralized P2P referral earning system with token rewards.</p>
+    <button onclick="showPage('wallet')">🚀 Get Started</button>
   </section>
 
   <!-- Wallet Page -->
   <section id="wallet" class="hidden">
-    <h2><i class="fas fa-wallet"></i> Wallet Connection</h2>
-    <div class="card">
-      <button onclick="connectWallet()"><i class="fab fa-ethereum"></i> Connect MetaMask</button>
-      <p id="walletAddress"></p>
-    </div>
-    <button onclick="showPage('donate')">Next <i class="fas fa-arrow-right"></i></button>
+    <h2>🔗 Connect Your Wallet</h2>
+    <button onclick="connectWallet()">Connect MetaMask</button>
+    <p id="walletAddress"></p>
+    <button onclick="showPage('donate')">Next → Donate</button>
   </section>
 
   <!-- Donate Page -->
   <section id="donate" class="hidden">
-    <h2><i class="fas fa-hand-holding-heart"></i> Donate for Society</h2>
+    <h2>💝 Donate for Society</h2>
     <div class="card">
-      <p>Choose Package</p>
-      <div class="package-options">
-        <div class="package-option" onclick="selectPackage(50, this)">
-          <span><i class="fas fa-gift"></i> Basic</span>
-          <span>$50</span>
-        </div>
-        <div class="package-option" onclick="selectPackage(100, this)">
-          <span><i class="fas fa-crown"></i> Premium</span>
-          <span>$100</span>
-        </div>
-        <div class="package-option" onclick="selectPackage(500, this)">
-          <span><i class="fas fa-diamond"></i> VIP</span>
-          <span>$500</span>
-        </div>
-      </div>
+      <p>Choose Your Package:</p>
+      <button>$50</button>
+      <button>$100</button>
+      <button>$500</button>
     </div>
-    <button onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Go to Dashboard</button>
+    <button onclick="showPage('dashboard')">Go to Dashboard</button>
   </section>
 
   <!-- Dashboard -->
   <section id="dashboard" class="hidden">
-    <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+    <h2>📊 My Dashboard</h2>
     <div class="card">
-      <h3><i class="fas fa-coins"></i> P2P Token Balance</h3>
+      <h3>P2P Token Balance</h3>
       <p id="tokenBalance">0 P2P</p>
-      <div class="progress-container">
-        <div class="progress-bar" id="tokenProgress"></div>
-      </div>
-      <small>Earn more tokens through referrals</small>
-    </div>
-    
-    <div class="card">
-      <h3><i class="fas fa-users"></i> My Team</h3>
-      
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-value" id="directTeam">0</div>
-          <div class="stat-label">Direct Team</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value" id="totalMembers">0</div>
-          <div class="stat-label">Total Members</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value">$<span id="totalEarnings">0</span></div>
-          <div class="stat-label">Total Earnings</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value" id="referralLevel">1</div>
-          <div class="stat-label">Referral Level</div>
-        </div>
-      </div>
-      
-      <button onclick="showPage('referral')"><i class="fas fa-share-alt"></i> Share Referral</button>
-    </div>
-  </section>
-  
-  <!-- Referral Page -->
-  <section id="referral" class="hidden">
-    <h2><i class="fas fa-share-alt"></i> Referral Program</h2>
-    <div class="card">
-      <h3><i class="fas fa-qrcode"></i> Your Referral Code</h3>
-      <p style="font-size: 24px; letter-spacing: 3px; font-weight: bold;">P2P-5A8B2</p>
-      <button onclick="copyReferralCode()"><i class="fas fa-copy"></i> Copy Code</button>
     </div>
     <div class="card">
-      <h3><i class="fas fa-link"></i> Your Referral Link</h3>
-      <p style="word-break: break-all; font-size: 12px;">https://p2pplatform.com/ref=5A8B2</p>
-      <button onclick="shareReferralLink()"><i class="fas fa-share"></i> Share Link</button>
+      <h3>👥 My Team</h3>
+      <p>Direct Team: <span id="directTeam">0</span></p>
+      <p>Total Members: <span id="totalMembers">0</span></p>
+      <p>Total Earnings: $<span id="totalEarnings">0</span></p>
     </div>
-    <button onclick="showPage('dashboard')"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
   </section>
 
   <!-- Navigation -->
   <nav>
-    <a href="#" onclick="showPage('welcome')">
-      <i class="fas fa-home"></i>
-      <span>Home</span>
-    </a>
-    <a href="#" onclick="showPage('dashboard')">
-      <i class="fas fa-tachometer-alt"></i>
-      <span>Dashboard</span>
-    </a>
-    <a href="#">
-      <div class="icon-wrapper">
-        <i class="fas fa-user"></i>
-        <span class="badge">3</span>
-      </div>
-      <span>Profile</span>
-    </a>
-    <a href="#">
-      <i class="fas fa-history"></i>
-      <span>History</span>
-    </a>
-    <a href="#">
-      <i class="fas fa-sign-out-alt"></i>
-      <span>Logout</span>
-    </a>
+    <a href="#" onclick="showPage('welcome')">🏠 Home</a>
+    <a href="#" onclick="showPage('dashboard')">👥 Team</a>
+    <a href="#">👤 Profile</a>
+    <a href="#">📜 History</a>
+    <a href="#">🚪 Logout</a>
   </nav>
 
   <script>
-    let selectedPackage = 0;
-    
     function showPage(pageId) {
       document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
       document.getElementById(pageId).classList.remove("hidden");
-      
-      // If showing dashboard, update stats
-      if (pageId === 'dashboard') {
-        updateDashboard();
-      }
     }
 
     async function connectWallet() {
       if (window.ethereum) {
-        try {
-          const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-          document.getElementById("walletAddress").innerText = "Connected: " + accounts[0].substring(0, 8) + "...";
-          
-          // Simulate token balance based on wallet connection
-          setTimeout(() => {
-            document.getElementById("tokenBalance").innerText = "125 P2P";
-            document.getElementById("tokenProgress").style.width = "45%";
-          }, 1000);
-          
-        } catch (error) {
-          alert("Error connecting to MetaMask: " + error.message);
-        }
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        document.getElementById("walletAddress").innerText = "Connected: " + accounts[0];
       } else {
-        alert("MetaMask not found. Please install it!");
+        alert("Please install MetaMask!");
       }
     }
-    
-    function selectPackage(amount, element) {
-      selectedPackage = amount;
-      
-      // Remove selected class from all options
-      document.querySelectorAll('.package-option').forEach(opt => {
-        opt.classList.remove('selected');
-      });
-      
-      // Add selected class to clicked option
-      element.classList.add('selected');
-    }
-    
-    function updateDashboard() {
-      // Simulate updating dashboard data
-      document.getElementById("directTeam").innerText = "5";
-      document.getElementById("totalMembers").innerText = "27";
-      document.getElementById("totalEarnings").innerText = "342";
-      document.getElementById("referralLevel").innerText = "3";
-    }
-    
-    function copyReferralCode() {
-      navigator.clipboard.writeText("P2P-5A8B2");
-      alert("Referral code copied to clipboard!");
-    }
-    
-    function shareReferralLink() {
-      if (navigator.share) {
-        navigator.share({
-          title: 'Join P2P Platform',
-          text: 'Check out this P2P referral earning platform!',
-          url: 'https://p2pplatform.com/ref=5A8B2'
-        })
-        .catch(error => {
-          console.log('Error sharing:', error);
-        });
-      } else {
-        alert("Web Share API not supported in your browser. Copy the link manually.");
-      }
-    }
-    
-    // Initialize with welcome page
-    showPage('welcome');
   </script>
 </body>
 </html>
