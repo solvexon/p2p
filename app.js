@@ -9,8 +9,8 @@ const isMetaMaskInstalled = typeof window.ethereum !== 'undefined';
 
 // ---- Deployed contract addresses ----
 const MYUSDT_CONTRACT_ADDRESS = "0x2AEF42da66D2ef5C88C45953d6FDDc25DE23dd23"; // Test USDT
-const P2P_CONTRACT_ADDRESS = "0x6d2945967a622Dc2E4445537f40173b53b303b01";   // Example P2P contract
-const REFERRAL_SYSTEM_CONTRACT_ADDRESS = "0x6a8732143cefdcc8c5a7580f69a1e2699ad08c"; // Referral system
+const P2P_CONTRACT_ADDRESS = "0x6d7249567a622DaEC24445537f401735b3033b0B";   // Example P2P contract
+const REFERRAL_SYSTEM_CONTRACT_ADDRESS = "0x6A873214C30EFdCC8C5A7580F69a1eF2699aD08c"; // Referral system
 
 // ---- Constants ----
 const PACKAGE_PRICE_USD = 125;
