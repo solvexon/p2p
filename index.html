@@ -1,204 +1,204 @@
 <!DOCTYPE html>
 <html lang="kn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P್ Systm</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P್ Systm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <div class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-rocket"></i>
-            </div>
-            <span>P2P Earnings</span>
-        </div>
-        <div class="user-actions">
-            <div class="notification-btn">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">3</span>
-            </div>
-        </div>
-    </header>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-rocket"></i>
+            </div>
+            <span>P2P Earnings</span>
+        </div>
+        <div class="user-actions">
+            <div class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+        </div>
+    </header>
 
-    <div class="container">
-        <div id="welcome" class="page active">
-            <div class="hero">
-                <h1>Earn with P2P Referrals</h1>
-                <p>Join our decentralized platform and earn through multi-level referral system and token rewards</p>
-                <button class="btn" id="connectWalletBtn">
-                    <i class="fas fa-wallet"></i> Connect Wallet
-                </button>
-            </div>
-        </div>
+    <div class="container">
+        <div id="welcome" class="page active">
+            <div class="hero">
+                <h1>Earn with P2P Referrals</h1>
+                <p>Join our decentralized platform and earn through multi-level referral system and token rewards</p>
+                <button class="btn" id="connectWalletBtn">
+                    <i class="fas fa-wallet"></i> Connect Wallet
+                </button>
+            </div>
+        </div>
 
-        <div id="wallet" class="page">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <h2>Connect Your Wallet</h2>
-                </div>
-                <p>Connect your wallet to start earning with our P2P referral system</p>
-                
-                <div style="margin: 30px 0;">
-                    <button class="btn" id="connectWalletMetaMaskBtn">
-                        <i class="fab fa-ethereum"></i> Connect MetaMask
-                    </button>
-                    <button class="btn btn-outline" style="margin-left: 10px;">
-                        <i class="fas fa-wallet"></i> Other Wallet
-                    </button>
-                </div>
-                
-                <div id="walletAddress" style="display: none;">
-                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin: 20px 0;">
-                        <p style="font-size: 14px; margin-bottom: 10px;">Connected Wallet</p>
-                        <h3 style="font-family: monospace; font-size: 18px;" id="userWalletAddress"></h3>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 30px;">
-                    <button class="btn" id="continueToDonateBtn" disabled>
-                        Continue <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+        <div id="wallet" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h2>Connect Your Wallet</h2>
+                </div>
+                <p>Connect your wallet to start earning with our P2P referral system</p>
+                
+                <div style="margin: 30px 0;">
+                    <button class="btn" id="connectWalletMetaMaskBtn">
+                        <i class="fab fa-ethereum"></i> Connect MetaMask
+                    </button>
+                    <button class="btn btn-outline" style="margin-left: 10px;">
+                        <i class="fas fa-wallet"></i> Other Wallet
+                    </button>
+                </div>
+                
+                <div id="walletAddress" style="display: none;">
+                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin: 20px 0;">
+                        <p style="font-size: 14px; margin-bottom: 10px;">Connected Wallet</p>
+                        <h3 style="font-family: monospace; font-size: 18px;" id="userWalletAddress"></h3>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn" id="continueToDonateBtn" disabled>
+                        Continue <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-        <div id="donate" class="page">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-hand-holding-heart"></i>
-                    </div>
-                    <h2>P2P Package</h2>
-                </div>
-                <p>Purchase the P2P package to activate your referral system and token vesting.</p>
-        
-                <div class="package-card selected">
-                    <h3>P2P Package</h3>
-                    <div class="package-price">125 MYUSDT</div>
-                    <ul class="package-features">
-                        <li><i class="fas fa-check-circle" style="color: var(--accent);"></i> Earn 2 P2P Tokens</li>
-                        <li><i class="fas fa-check-circle" style="color: var(--accent);"></i> 10-level referral income</li>
-                        <li><i class="fas fa-check-circle" style="color: var(--accent);"></i> Token vesting rewards</li>
-                    </ul>
-                    <button class="btn" id="buyPackageBtn">Purchase Package</button>
-                </div>
-            </div>
-        </div>
+        <div id="donate" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <h2>P2P Package</h2>
+                </div>
+                <p>Purchase the P2P package to activate your referral system and token vesting.</p>
+        
+                <div class="package-card selected">
+                    <h3>P2P Package</h3>
+                    <div class="package-price">125 MYUSDT</div>
+                    <ul class="package-features">
+                        <li><i class="fas fa-check-circle" style="color: var(--accent);"></i> Earn 2 P2P Tokens</li>
+                        <li><i class="fas fa-check-circle" style="color: var(--accent);"></i> 10-level referral income</li>
+                        <li><i class="fas fa-check-circle" style="color: var(--accent);"></i> Token vesting rewards</li>
+                    </ul>
+                    <button class="btn" id="buyPackageBtn">Purchase Package</button>
+                </div>
+            </div>
+        </div>
 
-        <div id="dashboard" class="page">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-tachometer-alt"></i>
-                    </div>
-                    <h2>Dashboard</h2>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Allocated P2P Tokens</div>
-                        <div class="stat-value" id="allocatedTokens">0</div>
-                        <div class="progress-container">
-                            <div class="progress-bar" id="vestingProgressBar" style="width: 0%;"></div>
-                        </div>
-                        <div class="stat-label" id="tokenLockInfo"></div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-label">Claimable Tokens</div>
-                        <div class="stat-value" id="claimableTokens">0</div>
-                        <button class="btn" id="claimTokensBtn" disabled>Claim</button>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-label">Total Referral Earnings (MYUSDT)</div>
-                        <div class="stat-value" id="totalReferralEarnings">0</div>
-                        <div class="stat-label">Lifetime</div>
-                    </div>
-                </div>
-            </div>
+        <div id="dashboard" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h2>Dashboard</h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Allocated P2P Tokens</div>
+                        <div class="stat-value" id="allocatedTokens">0</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="vestingProgressBar" style="width: 0%;"></div>
+                        </div>
+                        <div class="stat-label" id="tokenLockInfo"></div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-label">Claimable Tokens</div>
+                        <div class="stat-value" id="claimableTokens">0</div>
+                        <button class="btn" id="claimTokensBtn" disabled>Claim</button>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-label">Total Referral Earnings (MYUSDT)</div>
+                        <div class="stat-value" id="totalReferralEarnings">0</div>
+                        <div class="stat-label">Lifetime</div>
+                    </div>
+                </div>
+            </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h2>My Team & Awards</h2>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Direct Referrals</div>
-                        <div class="stat-value" id="directReferralsCount">0</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-label">Total Team</div>
-                        <div class="stat-value" id="teamReferralsCount">0</div>
-                    </div>
-                </div>
-        
-                <div class="awards-section" style="margin-top: 20px;">
-                    <h3>Awards</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                        <button class="btn" id="claimAwardBtn1" disabled>10 Directs Award</button>
-                        <button class="btn" id="claimAwardBtn2" disabled>50 Team Award</button>
-                        <button class="btn" id="claimAwardBtn3" disabled>250 Team Award</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h2>My Team & Awards</h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Direct Referrals</div>
+                        <div class="stat-value" id="directReferralsCount">0</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-label">Total Team</div>
+                        <div class="stat-value" id="teamReferralsCount">0</div>
+                    </div>
+                </div>
+        
+                <div class="awards-section" style="margin-top: 20px;">
+                    <h3>Awards</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <button class="btn" id="claimAwardBtn1" disabled>10 Directs Award</button>
+                        <button class="btn" id="claimAwardBtn2" disabled>50 Team Award</button>
+                        <button class="btn" id="claimAwardBtn3" disabled>250 Team Award</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <div id="referral" class="page">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-share-alt"></i>
-                    </div>
-                    <h2>Invite & Earn</h2>
-                </div>
-                <p>Share your unique referral link to build your team and earn rewards.</p>
-                
-                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin: 20px 0;">
-                    <p style="font-size: 14px; margin-bottom: 10px;">Your Referral Link</p>
-                    <h3 style="font-family: monospace; font-size: 16px;" id="referralLinkDisplay"></h3>
-                </div>
-                
-                <button class="btn" id="copyReferralLinkBtn">
-                    <i class="fas fa-copy"></i> Copy Link
-                </button>
-            </div>
-        </div>
-    </div>
+        <div id="referral" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h2>Invite & Earn</h2>
+                </div>
+                <p>Share your unique referral link to build your team and earn rewards.</p>
+                
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin: 20px 0;">
+                    <p style="font-size: 14px; margin-bottom: 10px;">Your Referral Link</p>
+                    <h3 style="font-family: monospace; font-size: 16px;" id="referralLinkDisplay"></h3>
+                </div>
+                
+                <button class="btn" id="copyReferralLinkBtn">
+                    <i class="fas fa-copy"></i> Copy Link
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <div class="bottom-nav">
-        <a href="#" class="nav-item active" onclick="showPage('welcome')">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </a>
-        <a href="#" class="nav-item" onclick="showPage('dashboard')">
-            <i class="fas fa-chart-pie"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="#" class="nav-item" onclick="showPage('referral')">
-            <i class="fas fa-share-alt"></i>
-            <span>Referrals</span>
-        </a>
-        <a href="#" class="nav-item" onclick="showPage('profile')">
-            <i class="fas fa-user"></i>
-            <span>Profile</span>
-        </a>
-    </div>
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="showPage('welcome')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('dashboard')">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('referral')">
+            <i class="fas fa-share-alt"></i>
+            <span>Referrals</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('profile')">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </div>
 
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
-    <script src="app.js" type="module"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <script src="app.js" type="module"></script>
 </body>
 </html>
