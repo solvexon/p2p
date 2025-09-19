@@ -5,6 +5,7 @@ import { P2P_ABI } from './abi/p2pAbi.js';
 import { REFERRAL_SYSTEM_ABI } from './abi/referralSystemAbi.js';
 
 import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js";
+
 const isMetaMaskInstalled = typeof window.ethereum !== 'undefined';
 
 // Your deployed contract addresses
