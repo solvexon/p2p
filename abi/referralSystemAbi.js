@@ -1,4 +1,5 @@
-[
+export const REFERRAL_SYSTEM_ABI = [
+	[
 	{
 		"inputs": [
 			{
