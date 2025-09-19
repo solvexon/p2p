@@ -5,43 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>P2P Platform</title>
   <style>
+    /* Background */
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460, #533483);
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #090979, #4f0c84, #ff00cc);
       color: #fff;
       text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     header {
       padding: 20px;
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
     }
     section {
       padding: 30px 20px;
+      flex: 1;
     }
     .card {
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 20px;
-      margin: 15px auto;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 25px;
+      margin: 20px auto;
       max-width: 400px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
     }
     button {
-      padding: 12px 20px;
+      padding: 12px 25px;
       border: none;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      border-radius: 12px;
+      background: linear-gradient(90deg, #00dbde, #fc00ff);
       color: #fff;
       font-weight: bold;
+      font-size: 14px;
       cursor: pointer;
-      margin: 10px;
-      transition: 0.3s;
+      margin: 8px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     button:hover {
-      opacity: 0.85;
+      transform: scale(1.05);
+      opacity: 0.9;
     }
     nav {
       position: fixed;
@@ -52,30 +67,43 @@
       display: flex;
       justify-content: space-around;
       padding: 12px 0;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
     }
     nav a {
       color: #fff;
       text-decoration: none;
       font-size: 14px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    nav a:hover {
+      color: #00dbde;
+    }
+    h2 {
+      margin-bottom: 15px;
+      font-size: 22px;
     }
     .hidden { display: none; }
   </style>
 </head>
 <body>
-  <header>🚀 Welcome to P2P Referral Earning Platform</header>
+  <header>🚀 P2P Referral Earning Platform</header>
 
   <!-- Welcome Page -->
   <section id="welcome">
-    <h2>About Us</h2>
-    <p>Decentralized P2P referral earning system with token rewards.</p>
-    <button onclick="showPage('wallet')">Connect Wallet</button>
+    <h2>👋 Welcome</h2>
+    <p>Decentralized P2P earning with multi-level referral & token rewards.</p>
+    <button onclick="showPage('wallet')">🔗 Connect Wallet</button>
   </section>
 
   <!-- Wallet Page -->
   <section id="wallet" class="hidden">
-    <h2>🔗 Connect Your Wallet</h2>
-    <button onclick="connectWallet()">Connect MetaMask</button>
-    <p id="walletAddress"></p>
+    <h2>🔗 Wallet Connection</h2>
+    <div class="card">
+      <button onclick="connectWallet()">Connect MetaMask</button>
+      <p id="walletAddress"></p>
+    </div>
     <button onclick="showPage('donate')">Next → Donate</button>
   </section>
 
@@ -83,7 +111,7 @@
   <section id="donate" class="hidden">
     <h2>💝 Donate for Society</h2>
     <div class="card">
-      <p>Select Package:</p>
+      <p>Choose Package</p>
       <button>$50</button>
       <button>$100</button>
       <button>$500</button>
@@ -93,7 +121,7 @@
 
   <!-- Dashboard -->
   <section id="dashboard" class="hidden">
-    <h2>📊 My Dashboard</h2>
+    <h2>📊 Dashboard</h2>
     <div class="card">
       <h3>P2P Token Balance</h3>
       <p id="tokenBalance">0 P2P</p>
@@ -108,11 +136,11 @@
 
   <!-- Navigation -->
   <nav>
-    <a href="#" onclick="showPage('welcome')">Home</a>
-    <a href="#" onclick="showPage('dashboard')">Team</a>
-    <a href="#">Profile</a>
-    <a href="#">History</a>
-    <a href="#">Logout</a>
+    <a href="#" onclick="showPage('welcome')">🏠 Home</a>
+    <a href="#" onclick="showPage('dashboard')">👥 Team</a>
+    <a href="#">👤 Profile</a>
+    <a href="#">📜 History</a>
+    <a href="#">🚪 Logout</a>
   </nav>
 
   <script>
@@ -126,7 +154,7 @@
         const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
         document.getElementById("walletAddress").innerText = "Connected: " + accounts[0];
       } else {
-        alert("Please install MetaMask!");
+        alert("MetaMask not found. Please install it!");
       }
     }
   </script>
