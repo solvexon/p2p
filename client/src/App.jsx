@@ -777,14 +777,21 @@ function App() {
         </div>
 
         <div className="wallet-info">
-          <p>
-            <strong>Wallet:</strong> {account}
-          </p>
-          <p>
-            <strong>Referral Link:</strong>{' '}
-            {`${window.location.origin}${window.location.pathname}?ref=${account}`}
-          </p>
-        </div>
+    <p><strong>Wallet:</strong> {account}</p>
+    <div className="referral-container">
+        <p>Your Referral Link</p>
+        <button 
+            className="copy-btn" 
+            onClick={() => {
+                const referralLink = `${window.location.origin}${window.location.pathname}?ref=${account}`;
+                navigator.clipboard.writeText(referralLink);
+                alert('Referral Link Copied!');
+            }}
+        >
+            Copy Link
+        </button>
+    </div>
+</div>
 
         <div className="dashboard-grid">
           <div className="stat-card">
