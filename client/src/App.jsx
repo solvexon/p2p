@@ -688,7 +688,7 @@ function App() {
         return (
             <div className="main-container">
                 <div className="connect-wallet-container">
-                    <img src="/logo.svg" alt="Company Logo" className="logo" />
+                    <img src="/logo.png" alt="Company Logo" className="logo" />
                     <h1>Welcome to P2P Smartchain</h1>
                     <p>Connect your wallet to begin your journey.</p>
                     <button onClick={connectWallet} className="connect-wallet-btn">Connect Wallet</button>
@@ -702,7 +702,7 @@ function App() {
             <div className="glass-card">
                 <div className="dashboard-header">
                     <div className="header-title">
-                        <img src="/logo.svg" alt="Company Logo" className="logo" />
+                        <img src="/logo.png" alt="Company Logo" className="logo" />
                         <h2>P2P Smartchain</h2>
                     </div>
                     <button onClick={handleLogout} className="logout-btn">Logout</button>
