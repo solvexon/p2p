@@ -528,6 +528,66 @@ const P2P_STAKING_ABI = [
 
 const POLYGON_SCAN_URL = 'https://polygonscan.com';
 
+const AboutSection = ({ onConnect }) => (
+    <>
+        <div className="about-section">
+            <h2>Welcome to P2P Smartchain</h2>
+            <p className="tagline">The Future of Decentralized Earnings on Polygon.</p>
+
+            <p>
+                Our vision is to create a truly decentralized, community-driven earning ecosystem. Built on the Polygon network, our platform offers a transparent, fair, and sustainable system for everyone. All rules are locked in a fully verified smart contract, ensuring there is no owner interference.
+            </p>
+
+            <div className="feature-grid">
+                <div className="feature-card">
+                    <h3>Truly Decentralized & Fair</h3>
+                    <p>
+                        The smart contract governs all operations. Unclaimed referral commissions are automatically added back to the project's liquidity pool, strengthening the entire ecosystem for the community.
+                    </p>
+                </div>
+                <div className="feature-card">
+                    <h3>The Power of the P2P Token</h3>
+                    <p>
+                        With an extremely low total supply, the P2P token is designed for scarcity and long-term value appreciation. 50% of all tokens are permanently locked in the smart contract to be distributed as rewards to our users.
+                    </p>
+                </div>
+            </div>
+
+            <div className="tokenomics-section">
+                <h3>Tokenomics: Built for Growth</h3>
+                <div className="tokenomics-container">
+                    <div className="pie-chart"></div>
+                    <ul className="token-legend">
+                        <li className="legend-item">
+                            <span className="legend-color" style={{ background: '#00c6ff' }}></span>
+                            50% Staking & User Rewards (Locked in Contract)
+                        </li>
+                        <li className="legend-item">
+                            <span className="legend-color" style={{ background: '#da22ff' }}></span>
+                            20% Liquidity Pool
+                        </li>
+                        <li className="legend-item">
+                            <span className="legend-color" style={{ background: '#00ff84' }}></span>
+                            20% Ecosystem Development
+                        </li>
+                        <li className="legend-item">
+                            <span className="legend-color" style={{ background: '#ffea83' }}></span>
+                            10% Marketing & Promotion
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div className="connect-wallet-container glass-card">
+            <img src="https://i.ibb.co/1tMzmcfn/logo.png" alt="Company Logo" className="logo" />
+            <h3>Your Journey Starts Now</h3>
+            <p>Connect your wallet to join the P2P Smartchain ecosystem.</p>
+            <button onClick={onConnect} className="connect-wallet-btn">Connect Wallet</button>
+        </div>
+    </>
+);
+
 function App() {
     const [account, setAccount] = useState(null);
     const [provider, setProvider] = useState(null);
@@ -696,12 +756,7 @@ function App() {
     if (!account) {
         return (
             <div className="main-container">
-                <div className="connect-wallet-container">
-                    <img src="https://i.ibb.co/1tMzmcfn/logo.png" alt="Company Logo" className="logo" />
-                    <h1>Welcome to P2P Smartchain</h1>
-                    <p>Connect your wallet to begin your journey.</p>
-                    <button onClick={connectWallet} className="connect-wallet-btn">Connect Wallet</button>
-                </div>
+                <AboutSection onConnect={connectWallet} />
             </div>
         );
     }
