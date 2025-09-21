@@ -818,27 +818,34 @@ const IncomeHistoryView = ({ history, currentUser }) => (
             </thead>
             <tbody>
                 {history && history.length > 0 ? (
-                    [...history].reverse().map((item, index) => (
-                        <tr key={index}>
-                            <td>{Number(item.incomeType) === 0 ? 'Commission' : 'Reward'}</td>
-                            <td>
-                                {parseFloat(ethers.formatUnits(item.amount, 18)).toFixed(4)}{' '}
-                                {Number(item.incomeType) === 0 ? 'POL' : 'P2P'}
-                            </td>
-                            <td>{Number(item.incomeType) === 0 ? `${item.fromUser.substring(0, 6)}...` : 'Self'}</td>
-                            <td>{new Date(Number(item.timestamp) * 1000).toLocaleDateString()}</td>
-                            <td>
-                                <a
-                                    href={`${POLYGON_SCAN_URL}/tx/${P2P_STAKING_ADDRESS}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="explorer-link"
-                                >
-                                    View
-                                </a>
-                            </td>
-                        </tr>
-                    ))
+                    [...history].reverse().map((item, index) => {
+                        // --- NEW LOGIC: Determine the correct address for the link ---
+                        const transactionAddress = Number(item.incomeType) === 0 
+                            ? item.fromUser  // For Commission, use the new user's address
+                            : currentUser;   // For Reward, use the current user's address
+
+                        return (
+                            <tr key={index}>
+                                <td>{Number(item.incomeType) === 0 ? 'Commission' : 'Reward'}</td>
+                                <td>
+                                    {parseFloat(ethers.formatUnits(item.amount, 18)).toFixed(4)}{' '}
+                                    {Number(item.incomeType) === 0 ? 'POL' : 'P2P'}
+                                </td>
+                                <td>{Number(item.incomeType) === 0 ? `${item.fromUser.substring(0, 6)}...` : 'Self'}</td>
+                                <td>{new Date(Number(item.timestamp) * 1000).toLocaleDateString()}</td>
+                                <td>
+                                    <a
+                                        href={`${POLYGON_SCAN_URL}/address/${transactionAddress}#internaltx`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="explorer-link"
+                                    >
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        );
+                    })
                 ) : (
                     <tr>
                         <td colSpan="5" style={{ textAlign: 'center' }}>
