@@ -528,7 +528,7 @@ const P2P_STAKING_ABI = [
 
 const POLYGON_SCAN_URL = 'https://polygonscan.com';
 
-const AboutSection = ({ onConnect }) => (
+const AboutSection = () => (
     <>
         <div className="about-section">
             <h2>Welcome to P2P Smartchain</h2>
@@ -577,13 +577,6 @@ const AboutSection = ({ onConnect }) => (
                     </ul>
                 </div>
             </div>
-        </div>
-
-        <div className="connect-wallet-container glass-card">
-            <img src="https://i.ibb.co/1tMzmcfn/logo.png" alt="Company Logo" className="logo" />
-            <h3>Your Journey Starts Now</h3>
-            <p>Connect your wallet to join the P2P Smartchain ecosystem.</p>
-            <button onClick={onConnect} className="connect-wallet-btn">Connect Wallet</button>
         </div>
     </>
 );
@@ -756,7 +749,13 @@ function App() {
     if (!account) {
         return (
             <div className="main-container">
-                <AboutSection onConnect={connectWallet} />
+                <div className="connect-wallet-container glass-card">
+                    <img src="https://i.ibb.co/1tMzmcfn/logo.png" alt="Company Logo" className="logo" />
+                    <h1>P2P Smartchain</h1>
+                    <p>Connect your wallet to begin your journey.</p>
+                    <button onClick={connectWallet} className="connect-wallet-btn">Connect Wallet</button>
+                </div>
+                <AboutSection />
             </div>
         );
     }
