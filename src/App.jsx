@@ -539,6 +539,7 @@ function App() {
     const [teamByLevel, setTeamByLevel] = useState([]);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('dashboard');
+    const [walletBalance, setWalletBalance] = useState('0');
 
     const connectWallet = async () => {
         if (!window.ethereum) return alert('Please install MetaMask!');
@@ -549,6 +550,10 @@ function App() {
             const signer = await provider.getSigner();
             const userAccount = await signer.getAddress();
             const stakingContract = new ethers.Contract(P2P_STAKING_ADDRESS, P2P_STAKING_ABI, signer);
+            
+            const balance = await provider.getBalance(userAccount);
+            setWalletBalance(ethers.formatEther(balance));
+
             setProvider(provider);
             setAccount(userAccount);
             setContract(stakingContract);
@@ -567,6 +572,7 @@ function App() {
         setUserStats({ totalTeam: 0, directs: 0, totalEarnings: 0 });
         setIncomeHistory([]);
         setTeamByLevel([]);
+        setWalletBalance('0');
     };
 
     useEffect(() => {
@@ -578,14 +584,17 @@ function App() {
     const fetchAllUserData = async () => {
         setLoading(true);
         try {
-            const [info, stats, history, ...teamLevels] = await Promise.all([
+            const [info, stats, history, balance, ...teamLevels] = await Promise.all([
                 contract.getUserInfo(account),
                 contract.getUserStats(account),
                 contract.getIncomeHistory(account),
+                provider.getBalance(account),
                 ...Array.from({ length: 10 }, (_, i) => contract.getTeamCount(account, i + 1)),
             ]);
 
             setIsRegistered(info.isExist);
+            setWalletBalance(ethers.formatEther(balance));
+
             if (info.isExist) {
                 setUserInfo({
                     lockEndDate: new Date(Number(info.lockEndDate) * 1000).toLocaleString(),
@@ -727,8 +736,9 @@ function App() {
 
                 <div className="dashboard-grid">
                     <div className="stat-card"><h3>Total Earnings</h3><p>{parseFloat(userStats.totalEarnings).toFixed(4)} POL</p></div>
-                    <div className="stat-card"><h3>Total Team</h3><p>{userStats.totalTeam}</p></div>
+                    <div className="stat-card"><h3>Wallet Balance</h3><p>{parseFloat(walletBalance).toFixed(4)} POL</p></div>
                     <div className="stat-card"><h3>Total Directs</h3><p>{userStats.directs}</p></div>
+                    <div className="stat-card"><h3>Total Team</h3><p>{userStats.totalTeam}</p></div>
                 </div>
 
                 <div className="tabs">
@@ -819,7 +829,7 @@ const IncomeHistoryView = ({ history, currentUser }) => (
                             <td>{new Date(Number(item.timestamp) * 1000).toLocaleDateString()}</td>
                             <td>
                                 <a
-                                    href={`${POLYGON_SCAN_URL}/address/${P2P_STAKING_ADDRESS}`}
+                                    href={`${POLYGON_SCAN_URL}/tx/${P2P_STAKING_ADDRESS}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="explorer-link"
