@@ -1,4 +1,4 @@
-/* --- App.css (Final Professional UI Version) --- */
+/* --- App.css (Final Version with All Features) --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
@@ -189,6 +189,7 @@ body {
     font-size: 12px;
     cursor: pointer;
     padding: 5px;
+    flex: 1;
 }
 
 .nav-item.active {
@@ -197,4 +198,218 @@ body {
 
 .nav-item .icon {
     font-size: 24px;
+}
+
+/* Styles from your old file, merged and cleaned */
+.main-container {
+    max-width: 500px; /* Enforce app-like width */
+}
+
+.glass-card, .about-section, .info-card {
+    background: linear-gradient(145deg, rgba(30, 26, 78, 0.7), rgba(26, 26, 46, 0.7));
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+}
+
+.about-section h2, .info-card h3 {
+    color: #fff;
+    font-size: 24px;
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+
+.about-section .tagline {
+    color: #00c6ff;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.about-section p {
+    line-height: 1.7;
+    color: #c0c0c0;
+    text-align: left;
+    font-size: 15px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.feature-card h3 {
+    color: #00c6ff;
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.tokenomics-section {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.tokenomics-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.pie-chart {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-image: conic-gradient(
+        #00c6ff 0% 50%, 
+        #da22ff 50% 70%, 
+        #00ff84 70% 90%, 
+        #ffea83 90% 100%
+    );
+}
+
+.token-legend {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.legend-color {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.info-card {
+    text-align: left;
+    padding: 20px;
+}
+
+.address-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 8px 8px 8px 12px;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+.address-text {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #c0c0c0;
+}
+
+.whitepaper-btn {
+    display: inline-block;
+    background: transparent;
+    border: 2px solid #00c6ff;
+    color: #00c6ff;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 25px;
+}
+
+.whitepaper-btn:hover {
+    background: #00c6ff;
+    color: #0f0c29;
+}
+
+.logout-btn {
+    background: rgba(255, 50, 50, 0.2);
+    border: 1px solid rgba(255, 50, 50, 0.5);
+}
+
+.wallet-info {
+    margin-bottom: 20px;
+}
+
+.referral-container {
+    margin-top: 10px;
+}
+
+.copy-btn {
+    background: #00c6ff;
+}
+
+.dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.stat-card {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px 15px;
+    border-radius: 16px;
+}
+
+.stat-card p {
+    font-size: 20px;
+    color: #00c6ff;
+}
+
+.tabs {
+    background: rgba(0,0,0,0.3);
+    border-radius: 50px;
+    padding: 5px;
+}
+
+.tab-button.active {
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.history-table {
+    margin-top: 15px;
+}
+
+.action-card {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    border-radius: 16px;
+    margin-top: 25px;
+}
+  
+.btn {
+    background: linear-gradient(90deg, #da22ff, #9733ee);
+    border-radius: 10px;
+    margin-top: 15px;
+}
+  
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
