@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import './App.css';
+import toast, { Toaster } from 'react-hot-toast';
 
 // --- MAINNET CONTRACT DETAILS (POLYGON) ---
 const P2P_STAKING_ADDRESS = '0xea68E6d330CdBf7787c7126d16F6022c8578d946';
-
-// --- YOUR NEW MAINNET ABI ---
+const P2P_TOKEN_ADDRESS = '0xfAfbd74FE76E90FB2924c56103aaCf6d2C4FE0bC';
 const P2P_STAKING_ABI = [
   {
     "inputs": [
@@ -528,10 +528,22 @@ const P2P_STAKING_ABI = [
 
 const POLYGON_SCAN_URL = 'https://polygonscan.com';
 
+const getReferrer = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const refFromUrl = urlParams.get('ref');
+    
+    if (ethers.isAddress(refFromUrl)) {
+        localStorage.setItem('referrer', refFromUrl);
+        return refFromUrl;
+    }
+    
+    return localStorage.getItem('referrer');
+};
+
 const AboutSection = () => (
     <>
         <div className="about-section">
-            <h2>Welcome to P2P Smartchain</h2>
+            <h2>About P2P Smartchain</h2>
             <p className="tagline">The Future of Decentralized Earnings on Polygon.</p>
 
             <p>
@@ -548,7 +560,7 @@ const AboutSection = () => (
                 <div className="feature-card">
                     <h3>The Power of the P2P Token</h3>
                     <p>
-                        With an extremely low total supply, the P2P token is designed for scarcity and long-term value appreciation. 50% of all tokens are permanently locked in the smart contract to be distributed as rewards to our users.
+                        With an extremely low total supply, the P2P token is designed for scarcity and long-term value appreciation. 50% of all tokens are permanently locked in the smart contract for user rewards.
                     </p>
                 </div>
             </div>
@@ -558,24 +570,29 @@ const AboutSection = () => (
                 <div className="tokenomics-container">
                     <div className="pie-chart"></div>
                     <ul className="token-legend">
-                        <li className="legend-item">
-                            <span className="legend-color" style={{ background: '#00c6ff' }}></span>
-                            50% Staking & User Rewards (Locked in Contract)
-                        </li>
-                        <li className="legend-item">
-                            <span className="legend-color" style={{ background: '#da22ff' }}></span>
-                            20% Liquidity Pool
-                        </li>
-                        <li className="legend-item">
-                            <span className="legend-color" style={{ background: '#00ff84' }}></span>
-                            20% Ecosystem Development
-                        </li>
-                        <li className="legend-item">
-                            <span className="legend-color" style={{ background: '#ffea83' }}></span>
-                            10% Marketing & Promotion
-                        </li>
+                        <li className="legend-item"><span className="legend-color" style={{ background: '#00c6ff' }}></span>50% Staking & User Rewards</li>
+                        <li className="legend-item"><span className="legend-color" style={{ background: '#da22ff' }}></span>20% Liquidity Pool</li>
+                        <li className="legend-item"><span className="legend-color" style={{ background: '#00ff84' }}></span>20% Ecosystem Development</li>
+                        <li className="legend-item"><span className="legend-color" style={{ background: '#ffea83' }}></span>10% Marketing & Promotion</li>
                     </ul>
                 </div>
+            </div>
+            
+            <div className="info-card" style={{marginTop: '30px'}}>
+                <h3>P2P Token Contract</h3>
+                <div className="address-container">
+                    <span className="address-text">{P2P_TOKEN_ADDRESS}</span>
+                    <button className="copy-btn" onClick={() => {
+                        navigator.clipboard.writeText(P2P_TOKEN_ADDRESS);
+                        toast.success('Address Copied!');
+                    }}>Copy</button>
+                </div>
+            </div>
+
+            <div className="info-card">
+                <h3>For Developers & Collaborators</h3>
+                <p>Opportunities are available for those who wish to work in our decentralized project or use our token to develop their own projects. Please tag us on our GitHub page.</p>
+                <a href="https://p2psmartchain.gitbook.io/p2p-smart-chain" target="_blank" rel="noopener noreferrer" className="whitepaper-btn">Read Our Whitepaper</a>
             </div>
         </div>
     </>
@@ -594,8 +611,12 @@ function App() {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [walletBalance, setWalletBalance] = useState('0');
 
+    useEffect(() => {
+        getReferrer();
+    }, []);
+
     const connectWallet = async () => {
-        if (!window.ethereum) return alert('Please install MetaMask!');
+        if (!window.ethereum) return toast.error('Please install MetaMask!');
         try {
             setLoading(true);
             const provider = new ethers.BrowserProvider(window.ethereum);
@@ -669,67 +690,80 @@ function App() {
     };
 
     const handleRegister = async () => {
-        if (!contract) return alert("Please connect your wallet first.");
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            let referrer = urlParams.get('ref') || '0x0000000000000000000000000000000000000000';
-            if (!ethers.isAddress(referrer)) {
-                referrer = '0x0000000000000000000000000000000000000000';
-            }
-            
-            alert("Confirm the transaction in your wallet to register.");
-            
-            const packageCost = ethers.parseEther("430"); 
-            
-            const registerTx = await contract.register(referrer, { value: packageCost });
-            
-            alert("Processing your registration... please wait for confirmation.");
-            await registerTx.wait();
+        if (!contract) return toast.error("Please connect your wallet first.");
 
-            alert("Registration successful!");
-            fetchAllUserData();
-        } catch (error) {
-            console.error("Registration failed:", error);
-            alert("Registration failed. See the console for details.");
+        const savedReferrer = getReferrer();
+
+        if (!savedReferrer || !ethers.isAddress(savedReferrer)) {
+            return toast.error("A valid referral is required to register. Please use a referral link.");
         }
+        
+        const packageCost = ethers.parseEther("430");
+        
+        const promise = contract.register(savedReferrer, { value: packageCost });
+
+        toast.promise(
+            promise.then(tx => tx.wait()),
+            {
+                loading: 'Processing registration... Please wait.',
+                success: () => {
+                    fetchAllUserData();
+                    return <b>Registration successful! Welcome aboard!</b>;
+                },
+                error: (err) => {
+                    const reason = err.reason || "Transaction failed. Please check your balance or try again.";
+                    return <b>Registration failed: {reason}</b>;
+                }
+            }
+        );
     };
 
     const handleClaimTokens = async () => {
         if (!contract) return;
-        try {
-            alert('Claiming your monthly tokens...');
-            const tx = await contract.claimTokens();
-            await tx.wait();
-            alert('Tokens claimed successfully!');
-            fetchAllUserData();
-        } catch (error) {
-            console.error('Claim tokens failed:', error);
-            alert('Claim failed. You might not be eligible yet.');
-        }
+        const promise = contract.claimTokens().then(tx => tx.wait());
+        toast.promise(promise, {
+            loading: 'Claiming your monthly tokens...',
+            success: () => {
+                fetchAllUserData();
+                return <b>Tokens claimed successfully!</b>;
+            },
+            error: (err) => <b>Claim failed: {err.reason || "You might not be eligible yet."}</b>
+        });
     };
-
+    
     const handleClaimReward = async (rewardId) => {
         if (!contract) return;
-        try {
-            alert(`Claiming reward for ID: ${rewardId}...`);
-            const tx = await contract.claimReward(rewardId);
-            await tx.wait();
-            alert('Reward claimed successfully!');
-            fetchAllUserData();
-        } catch (error) {
-            console.error(`Claiming reward ${rewardId} failed:`, error);
-            alert('Reward claim failed. You might not have met the requirements.');
-        }
+        const promise = contract.claimReward(rewardId).then(tx => tx.wait());
+        toast.promise(promise, {
+            loading: `Claiming reward for ID: ${rewardId}...`,
+            success: () => {
+                fetchAllUserData();
+                return <b>Reward claimed successfully!</b>;
+            },
+            error: (err) => <b>Reward claim failed: {err.reason || "You may not have met the requirements."}</b>
+        });
     };
 
     const renderContent = () => {
         if (loading) return <p style={{ textAlign: 'center', padding: '20px' }}>Loading your data...</p>;
         if (!isRegistered) {
+            const savedReferrer = getReferrer();
+            const isReferrerValid = savedReferrer && ethers.isAddress(savedReferrer);
+
             return (
                 <div className="action-card">
                     <h3>Join Now</h3>
                     <p>Purchase the 430 POL package to start earning.</p>
-                    <button onClick={handleRegister} className="btn">Register Now</button>
+                    <p style={{ fontSize: '12px', opacity: 0.8, marginTop: '10px' }}>
+                        {isReferrerValid ? `Registering under: ${savedReferrer.substring(0, 6)}...${savedReferrer.substring(38)}` : "A valid referral is required."}
+                    </p>
+                    <button 
+                        onClick={handleRegister} 
+                        className="btn" 
+                        disabled={!isReferrerValid}
+                    >
+                        Register Now
+                    </button>
                 </div>
             );
         }
@@ -762,6 +796,7 @@ function App() {
 
     return (
         <div className="main-container">
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="glass-card">
                 <div className="dashboard-header">
                     <div className="header-title">
@@ -780,7 +815,7 @@ function App() {
                             onClick={() => {
                                 const referralLink = `${window.location.origin}${window.location.pathname}?ref=${account}`;
                                 navigator.clipboard.writeText(referralLink);
-                                alert('Referral Link Copied!');
+                                toast.success('Referral Link Copied!');
                             }}
                         >
                             Copy Link
