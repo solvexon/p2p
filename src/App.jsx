@@ -6,8 +6,6 @@ import toast, { Toaster } from 'react-hot-toast';
 // --- MAINNET CONTRACT DETAILS (POLYGON) ---
 const P2P_STAKING_ADDRESS = '0xea68E6d330CdBf7787c7126d16F6022c8578d946';
 const P2P_TOKEN_ADDRESS = '0xfAfbd74FE76E90FB2924c56103aaCf6d2C4FE0bC';
-
-// --- YOUR NEW MAINNET ABI ---
 const P2P_STAKING_ABI = [
   {
     "inputs": [
