@@ -541,61 +541,59 @@ const getReferrer = () => {
 };
 
 const AboutSection = () => (
-    <>
-        <div className="about-section">
-            <h2>About P2P Smartchain</h2>
-            <p className="tagline">The Future of Decentralized Earnings on Polygon.</p>
+    <div className="about-section">
+        <h2>About P2P Smartchain</h2>
+        <p className="tagline">The Future of Decentralized Earnings on Polygon.</p>
 
-            <p>
-                Our vision is to create a truly decentralized, community-driven earning ecosystem. Built on the Polygon network, our platform offers a transparent, fair, and sustainable system for everyone. All rules are locked in a fully verified smart contract, ensuring there is no owner interference.
-            </p>
+        <p>
+            Our vision is to create a truly decentralized, community-driven earning ecosystem. Built on the Polygon network, our platform offers a transparent, fair, and sustainable system for everyone. All rules are locked in a fully verified smart contract, ensuring there is no owner interference.
+        </p>
 
-            <div className="feature-grid">
-                <div className="feature-card">
-                    <h3>Truly Decentralized & Fair</h3>
-                    <p>
-                        The smart contract governs all operations. Unclaimed referral commissions are automatically added back to the project's liquidity pool, strengthening the entire ecosystem for the community.
-                    </p>
-                </div>
-                <div className="feature-card">
-                    <h3>The Power of the P2P Token</h3>
-                    <p>
-                        With an extremely low total supply, the P2P token is designed for scarcity and long-term value appreciation. 50% of all tokens are permanently locked in the smart contract for user rewards.
-                    </p>
-                </div>
+        <div className="feature-grid">
+            <div className="feature-card">
+                <h3>Truly Decentralized & Fair</h3>
+                <p>
+                    The smart contract governs all operations. Unclaimed referral commissions are automatically added back to the project's liquidity pool, strengthening the entire ecosystem for the community.
+                </p>
             </div>
-
-            <div className="tokenomics-section">
-                <h3>Tokenomics: Built for Growth</h3>
-                <div className="tokenomics-container">
-                    <div className="pie-chart"></div>
-                    <ul className="token-legend">
-                        <li className="legend-item"><span className="legend-color" style={{ background: '#00c6ff' }}></span>50% Staking & User Rewards</li>
-                        <li className="legend-item"><span className="legend-color" style={{ background: '#da22ff' }}></span>20% Liquidity Pool</li>
-                        <li className="legend-item"><span className="legend-color" style={{ background: '#00ff84' }}></span>20% Ecosystem Development</li>
-                        <li className="legend-item"><span className="legend-color" style={{ background: '#ffea83' }}></span>10% Marketing & Promotion</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div className="info-card" style={{marginTop: '30px'}}>
-                <h3>P2P Token Contract</h3>
-                <div className="address-container">
-                    <span className="address-text">{P2P_TOKEN_ADDRESS}</span>
-                    <button className="copy-btn" onClick={() => {
-                        navigator.clipboard.writeText(P2P_TOKEN_ADDRESS);
-                        toast.success('Address Copied!');
-                    }}>Copy</button>
-                </div>
-            </div>
-
-            <div className="info-card">
-                <h3>For Developers & Collaborators</h3>
-                <p>Opportunities are available for those who wish to work in our decentralized project or use our token to develop their own projects. Please tag us on our GitHub page.</p>
-                <a href="https://p2psmartchain.gitbook.io/p2p-smart-chain" target="_blank" rel="noopener noreferrer" className="whitepaper-btn">Read Our Whitepaper</a>
+            <div className="feature-card">
+                <h3>The Power of the P2P Token</h3>
+                <p>
+                    With an extremely low total supply, the P2P token is designed for scarcity and long-term value appreciation. 50% of all tokens are permanently locked in the smart contract for user rewards.
+                </p>
             </div>
         </div>
-    </>
+
+        <div className="tokenomics-section">
+            <h3>Tokenomics: Built for Growth</h3>
+            <div className="tokenomics-container">
+                <div className="pie-chart"></div>
+                <ul className="token-legend">
+                    <li className="legend-item"><span className="legend-color" style={{ background: '#00c6ff' }}></span>50% Staking & User Rewards</li>
+                    <li className="legend-item"><span className="legend-color" style={{ background: '#da22ff' }}></span>20% Liquidity Pool</li>
+                    <li className="legend-item"><span className="legend-color" style={{ background: '#00ff84' }}></span>20% Ecosystem Development</li>
+                    <li className="legend-item"><span className="legend-color" style={{ background: '#ffea83' }}></span>10% Marketing & Promotion</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div className="info-card" style={{marginTop: '30px'}}>
+            <h3>P2P Token Contract</h3>
+            <div className="address-container">
+                <span className="address-text">{P2P_TOKEN_ADDRESS}</span>
+                <button className="copy-btn" onClick={() => {
+                    navigator.clipboard.writeText(P2P_TOKEN_ADDRESS);
+                    toast.success('Address Copied!');
+                }}>Copy</button>
+            </div>
+        </div>
+
+        <div className="info-card">
+            <h3>For Developers & Collaborators</h3>
+            <p>Opportunities are available for those who wish to work in our decentralized project or use our token to develop their own projects. Please tag us on our GitHub page.</p>
+            <a href="https://p2psmartchain.gitbook.io/p2p-smart-chain" target="_blank" rel="noopener noreferrer" className="whitepaper-btn">Read Our Whitepaper</a>
+        </div>
+    </div>
 );
 
 function App() {
@@ -745,7 +743,7 @@ function App() {
     };
 
     const renderContent = () => {
-        if (loading) return <p style={{ textAlign: 'center', padding: '20px' }}>Loading your data...</p>;
+        if (loading) return <p className="loading-text">Loading your data...</p>;
         if (!isRegistered) {
             const savedReferrer = getReferrer();
             const isReferrerValid = savedReferrer && ethers.isAddress(savedReferrer);
@@ -754,7 +752,7 @@ function App() {
                 <div className="action-card">
                     <h3>Join Now</h3>
                     <p>Purchase the 430 POL package to start earning.</p>
-                    <p style={{ fontSize: '12px', opacity: 0.8, marginTop: '10px' }}>
+                    <p className="referral-note">
                         {isReferrerValid ? `Registering under: ${savedReferrer.substring(0, 6)}...${savedReferrer.substring(38)}` : "A valid referral is required."}
                     </p>
                     <button 
@@ -797,7 +795,7 @@ function App() {
     return (
         <div className="main-container">
             <Toaster position="top-center" reverseOrder={false} />
-            <div className="glass-card">
+            <div className="glass-card app-card">
                 <div className="dashboard-header">
                     <div className="header-title">
                         <img src="https://i.ibb.co/1tMzmcfn/logo.png" alt="Company Logo" className="logo" />
@@ -823,7 +821,7 @@ function App() {
                     </div>
                 </div>
 
-                <div className="dashboard-grid">
+                <div className="stats-grid">
                     <div className="stat-card"><h3>Total Earnings</h3><p>{parseFloat(userStats.totalEarnings).toFixed(4)} POL</p></div>
                     <div className="stat-card"><h3>Wallet Balance</h3><p>{parseFloat(walletBalance).toFixed(4)} POL</p></div>
                     <div className="stat-card"><h3>Total Directs</h3><p>{userStats.directs}</p></div>
@@ -831,10 +829,10 @@ function App() {
                 </div>
 
                 <div className="tabs">
-                    <button onClick={() => setActiveTab('dashboard')} className={`tab-button ${activeTab === 'dashboard' && 'active'}`}>Dashboard</button>
-                    <button onClick={() => setActiveTab('team')} className={`tab-button ${activeTab === 'team' && 'active'}`}>My Team</button>
-                    <button onClick={() => setActiveTab('history')} className={`tab-button ${activeTab === 'history' && 'active'}`}>History</button>
-                    <button onClick={() => setActiveTab('awards')} className={`tab-button ${activeTab === 'awards' && 'active'}`}>Awards</button>
+                    <button onClick={() => setActiveTab('dashboard')} className={`tab-button ${activeTab === 'dashboard' ? 'active' : ''}`}>Dashboard</button>
+                    <button onClick={() => setActiveTab('team')} className={`tab-button ${activeTab === 'team' ? 'active' : ''}`}>My Team</button>
+                    <button onClick={() => setActiveTab('history')} className={`tab-button ${activeTab === 'history' ? 'active' : ''}`}>History</button>
+                    <button onClick={() => setActiveTab('awards')} className={`tab-button ${activeTab === 'awards' ? 'active' : ''}`}>Awards</button>
                 </div>
 
                 <div className="tab-content">{renderContent()}</div>
@@ -847,11 +845,11 @@ function App() {
 
 const DashboardView = ({ userInfo, onClaim }) => (
     <>
-        <div className="dashboard-grid">
+        <div className="stats-grid">
             <div className="stat-card"><h3>Total Stake</h3><p>{userInfo?.totalReward} P2P</p></div>
             <div className="stat-card"><h3>Claimed Tokens</h3><p>{parseFloat(userInfo?.totalClaimed).toFixed(4)} P2P</p></div>
             <div className="stat-card"><h3>Remaining Tokens</h3><p>{((userInfo?.totalReward || 0) - (userInfo?.totalClaimed || 0)).toFixed(4)} P2P</p></div>
-            <div className="stat-card"><h3>Lock Period Ends</h3><p style={{ fontSize: '16px' }}>{userInfo?.lockEndDate}</p></div>
+            <div className="stat-card"><h3>Lock Period Ends</h3><p>{userInfo?.lockEndDate}</p></div>
         </div>
         <div className="action-card">
             <h3>Claim Your Monthly Rewards</h3>
@@ -892,7 +890,6 @@ const TeamView = ({ teamByLevel }) => {
     );
 };
 
-
 const IncomeHistoryView = ({ history, currentUser }) => (
     <div className="table-container">
         <table className="history-table">
@@ -930,9 +927,7 @@ const IncomeHistoryView = ({ history, currentUser }) => (
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="5" style={{ textAlign: 'center' }}>
-                            No income history found.
-                        </td>
+                        <td colSpan="5" className="no-data">No income history found.</td>
                     </tr>
                 )}
             </tbody>
@@ -973,15 +968,6 @@ const AwardsView = ({ directs, teamByLevel, onClaim }) => {
                                     className="btn"
                                     onClick={() => onClaim(award.id)}
                                     disabled={award.current < award.required}
-                                    style={{
-                                        padding: '8px 12px',
-                                        fontSize: '14px',
-                                        cursor:
-                                            award.current < award.required
-                                                ? 'not-allowed'
-                                                : 'pointer',
-                                        opacity: award.current < award.required ? 0.5 : 1,
-                                    }}
                                 >
                                     Claim
                                 </button>
