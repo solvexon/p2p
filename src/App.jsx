@@ -528,93 +528,19 @@ const P2P_STAKING_ABI = [
 
 const POLYGON_SCAN_URL = 'https://polygonscan.com';
 
-const getReferrer = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const refFromUrl = urlParams.get('ref');
-    
-    if (ethers.isAddress(refFromUrl)) {
-        localStorage.setItem('referrer', refFromUrl);
-        return refFromUrl;
-    }
-    
-    return localStorage.getItem('referrer');
-};
-
-const AboutSection = () => (
-    <>
-        <div className="about-section">
-            <h2>About P2P Smartchain</h2>
-            <p className="tagline">The Future of Decentralized Earnings on Polygon.</p>
-
-            <p>
-                Our vision is to create a truly decentralized, community-driven earning ecosystem. Built on the Polygon network, our platform offers a transparent, fair, and sustainable system for everyone. All rules are locked in a fully verified smart contract, ensuring there is no owner interference.
-            </p>
-
-            <div className="feature-grid">
-                <div className="feature-card">
-                    <h3>Truly Decentralized & Fair</h3>
-                    <p>
-                        The smart contract governs all operations. Unclaimed referral commissions are automatically added back to the project's liquidity pool, strengthening the entire ecosystem for the community.
-                    </p>
-                </div>
-                <div className="feature-card">
-                    <h3>The Power of the P2P Token</h3>
-                    <p>
-                        With an extremely low total supply, the P2P token is designed for scarcity and long-term value appreciation. 50% of all tokens are permanently locked in the smart contract for user rewards.
-                    </p>
-                </div>
-            </div>
-
-            <div className="tokenomics-section">
-                <h3>Tokenomics: Built for Growth</h3>
-                <div className="tokenomics-container">
-                    <div className="pie-chart"></div>
-                    <ul className="token-legend">
-                        <li className="legend-item"><span className="legend-color" style={{ background: '#00c6ff' }}></span>50% Staking & User Rewards</li>
-                        <li className="legend-item"><span className="legend-color" style={{ background: '#da22ff' }}></span>20% Liquidity Pool</li>
-                        <li className="legend-item"><span className="legend-color" style={{ background: '#00ff84' }}></span>20% Ecosystem Development</li>
-                        <li className="legend-item"><span className="legend-color" style={{ background: '#ffea83' }}></span>10% Marketing & Promotion</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div className="info-card" style={{marginTop: '30px'}}>
-                <h3>P2P Token Contract</h3>
-                <div className="address-container">
-                    <span className="address-text">{P2P_TOKEN_ADDRESS}</span>
-                    <button className="copy-btn" onClick={() => {
-                        navigator.clipboard.writeText(P2P_TOKEN_ADDRESS);
-                        toast.success('Address Copied!');
-                    }}>Copy</button>
-                </div>
-            </div>
-
-            <div className="info-card">
-                <h3>For Developers & Collaborators</h3>
-                <p>Opportunities are available for those who wish to work in our decentralized project or use our token to develop their own projects. Please tag us on our GitHub page.</p>
-                <a href="https://p2psmartchain.gitbook.io/p2p-smart-chain" target="_blank" rel="noopener noreferrer" className="whitepaper-btn">Read Our Whitepaper</a>
-            </div>
-        </div>
-    </>
-);
-
 function App() {
     const [account, setAccount] = useState(null);
     const [provider, setProvider] = useState(null);
     const [contract, setContract] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [activeTab, setActiveTab] = useState('Home');
+
     const [isRegistered, setIsRegistered] = useState(false);
-    const [userInfo, setUserInfo] = useState(null);
     const [userStats, setUserStats] = useState({ totalTeam: 0, directs: 0, totalEarnings: 0 });
+    const [userInfo, setUserInfo] = useState(null);
     const [incomeHistory, setIncomeHistory] = useState([]);
     const [teamByLevel, setTeamByLevel] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState('dashboard');
-    const [walletBalance, setWalletBalance] = useState('0');
-
-    useEffect(() => {
-        getReferrer();
-    }, []);
-
+    
     const connectWallet = async () => {
         if (!window.ethereum) return toast.error('Please install MetaMask!');
         try {
@@ -625,14 +551,12 @@ function App() {
             const userAccount = await signer.getAddress();
             const stakingContract = new ethers.Contract(P2P_STAKING_ADDRESS, P2P_STAKING_ABI, signer);
             
-            const balance = await provider.getBalance(userAccount);
-            setWalletBalance(ethers.formatEther(balance));
-
             setProvider(provider);
             setAccount(userAccount);
             setContract(stakingContract);
         } catch (error) {
             console.error('Error connecting wallet:', error);
+        } finally {
             setLoading(false);
         }
     };
@@ -646,7 +570,6 @@ function App() {
         setUserStats({ totalTeam: 0, directs: 0, totalEarnings: 0 });
         setIncomeHistory([]);
         setTeamByLevel([]);
-        setWalletBalance('0');
     };
 
     useEffect(() => {
@@ -654,20 +577,18 @@ function App() {
             fetchAllUserData();
         }
     }, [contract, account]);
-
+    
     const fetchAllUserData = async () => {
         setLoading(true);
         try {
-            const [info, stats, history, balance, ...teamLevels] = await Promise.all([
+            const [info, stats, history, ...teamLevels] = await Promise.all([
                 contract.getUserInfo(account),
                 contract.getUserStats(account),
                 contract.getIncomeHistory(account),
-                provider.getBalance(account),
                 ...Array.from({ length: 10 }, (_, i) => contract.getTeamCount(account, i + 1)),
             ]);
 
             setIsRegistered(info.isExist);
-            setWalletBalance(ethers.formatEther(balance));
 
             if (info.isExist) {
                 setUserInfo({
@@ -691,307 +612,173 @@ function App() {
 
     const handleRegister = async () => {
         if (!contract) return toast.error("Please connect your wallet first.");
-
-        const savedReferrer = getReferrer();
-
+        const savedReferrer = localStorage.getItem('referrer');
         if (!savedReferrer || !ethers.isAddress(savedReferrer)) {
-            return toast.error("A valid referral is required to register. Please use a referral link.");
+            return toast.error("A valid referral is required to register.");
         }
-        
-        const packageCost = ethers.parseEther("430");
-        
-        const promise = contract.register(savedReferrer, { value: packageCost });
-
-        toast.promise(
-            promise.then(tx => tx.wait()),
-            {
-                loading: 'Processing registration... Please wait.',
-                success: () => {
-                    fetchAllUserData();
-                    return <b>Registration successful! Welcome aboard!</b>;
-                },
-                error: (err) => {
-                    const reason = err.reason || "Transaction failed. Please check your balance or try again.";
-                    return <b>Registration failed: {reason}</b>;
-                }
-            }
-        );
-    };
-
-    const handleClaimTokens = async () => {
-        if (!contract) return;
-        const promise = contract.claimTokens().then(tx => tx.wait());
-        toast.promise(promise, {
-            loading: 'Claiming your monthly tokens...',
-            success: () => {
-                fetchAllUserData();
-                return <b>Tokens claimed successfully!</b>;
-            },
-            error: (err) => <b>Claim failed: {err.reason || "You might not be eligible yet."}</b>
-        });
-    };
-    
-    const handleClaimReward = async (rewardId) => {
-        if (!contract) return;
-        const promise = contract.claimReward(rewardId).then(tx => tx.wait());
-        toast.promise(promise, {
-            loading: `Claiming reward for ID: ${rewardId}...`,
-            success: () => {
-                fetchAllUserData();
-                return <b>Reward claimed successfully!</b>;
-            },
-            error: (err) => <b>Reward claim failed: {err.reason || "You may not have met the requirements."}</b>
+        const promise = contract.register(savedReferrer, { value: ethers.parseEther("430") });
+        toast.promise(promise.then(tx => tx.wait()), {
+            loading: 'Processing registration...',
+            success: () => { fetchAllUserData(); return <b>Registration successful!</b>; },
+            error: (err) => <b>Registration failed: {err.reason || "Unknown error"}</b>,
         });
     };
 
     const renderContent = () => {
-        if (loading) return <p style={{ textAlign: 'center', padding: '20px' }}>Loading your data...</p>;
-        if (!isRegistered) {
-            const savedReferrer = getReferrer();
-            const isReferrerValid = savedReferrer && ethers.isAddress(savedReferrer);
-
-            return (
-                <div className="action-card">
-                    <h3>Join Now</h3>
-                    <p>Purchase the 430 POL package to start earning.</p>
-                    <p style={{ fontSize: '12px', opacity: 0.8, marginTop: '10px' }}>
-                        {isReferrerValid ? `Registering under: ${savedReferrer.substring(0, 6)}...${savedReferrer.substring(38)}` : "A valid referral is required."}
-                    </p>
-                    <button 
-                        onClick={handleRegister} 
-                        className="btn" 
-                        disabled={!isReferrerValid}
-                    >
-                        Register Now
-                    </button>
-                </div>
-            );
-        }
-
+        if (loading) return <p style={{textAlign: 'center'}}>Loading data...</p>;
+        
         switch (activeTab) {
-            case 'team':
-                return <TeamView teamByLevel={teamByLevel} />;
-            case 'history':
-                return <IncomeHistoryView history={incomeHistory} currentUser={account} />;
-            case 'awards':
-                return <AwardsView directs={userStats.directs} teamByLevel={teamByLevel} onClaim={handleClaimReward} />;
+            case 'Team': return <TeamTab teamByLevel={teamByLevel} />;
+            case 'History': return <HistoryTab history={incomeHistory} currentUser={account} />;
+            case 'Profile': return <ProfileTab onLogout={handleLogout} account={account} />;
+            case 'Home':
             default:
-                return <DashboardView userInfo={userInfo} onClaim={handleClaimTokens} />;
+                return <HomeTab userStats={userStats} isRegistered={isRegistered} onRegister={handleRegister} />;
         }
     };
-
+    
     if (!account) {
         return (
-            <div className="main-container">
-                <div className="connect-wallet-container glass-card">
-                    <img src="https://i.ibb.co/1tMzmcfn/logo.png" alt="Company Logo" className="logo" />
-                    <h1>P2P Smartchain</h1>
-                    <p>Connect your wallet to begin your journey.</p>
-                    <button onClick={connectWallet} className="connect-wallet-btn">Connect Wallet</button>
-                </div>
-                <AboutSection />
+            <div className="connect-wallet-container">
+                <img src="https://i.ibb.co/1tMzmcfn/logo.png" alt="Company Logo" className="logo" />
+                <h1>P2P Smartchain</h1>
+                <p>The Future of Decentralized Earnings on Polygon.</p>
+                <button onClick={connectWallet} className="connect-wallet-btn">Connect Wallet</button>
             </div>
         );
     }
 
     return (
-        <div className="main-container">
-            <Toaster position="top-center" reverseOrder={false} />
-            <div className="glass-card">
-                <div className="dashboard-header">
-                    <div className="header-title">
-                        <img src="https://i.ibb.co/1tMzmcfn/logo.png" alt="Company Logo" className="logo" />
-                        <h2>P2P Smartchain</h2>
-                    </div>
-                    <button onClick={handleLogout} className="logout-btn">Logout</button>
-                </div>
-
-                <div className="wallet-info">
-                    <p><strong>Wallet:</strong> {account}</p>
-                    <div className="referral-container">
-                        <p>Your Referral Link</p>
-                        <button 
-                            className="copy-btn" 
-                            onClick={() => {
-                                const referralLink = `${window.location.origin}${window.location.pathname}?ref=${account}`;
-                                navigator.clipboard.writeText(referralLink);
-                                toast.success('Referral Link Copied!');
-                            }}
-                        >
-                            Copy Link
-                        </button>
-                    </div>
-                </div>
-
-                <div className="dashboard-grid">
-                    <div className="stat-card"><h3>Total Earnings</h3><p>{parseFloat(userStats.totalEarnings).toFixed(4)} POL</p></div>
-                    <div className="stat-card"><h3>Wallet Balance</h3><p>{parseFloat(walletBalance).toFixed(4)} POL</p></div>
-                    <div className="stat-card"><h3>Total Directs</h3><p>{userStats.directs}</p></div>
-                    <div className="stat-card"><h3>Total Team</h3><p>{userStats.totalTeam}</p></div>
-                </div>
-
-                <div className="tabs">
-                    <button onClick={() => setActiveTab('dashboard')} className={`tab-button ${activeTab === 'dashboard' && 'active'}`}>Dashboard</button>
-                    <button onClick={() => setActiveTab('team')} className={`tab-button ${activeTab === 'team' && 'active'}`}>My Team</button>
-                    <button onClick={() => setActiveTab('history')} className={`tab-button ${activeTab === 'history' && 'active'}`}>History</button>
-                    <button onClick={() => setActiveTab('awards')} className={`tab-button ${activeTab === 'awards' && 'active'}`}>Awards</button>
-                </div>
-
-                <div className="tab-content">{renderContent()}</div>
+        <div className="app-container">
+            <Toaster position="top-center" />
+            <div className="main-content">
+                <PageHeader />
+                {renderContent()}
             </div>
+            <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
     );
 }
 
-// --- Sub-Components ---
+// --- UI Components ---
 
-const DashboardView = ({ userInfo, onClaim }) => (
-    <>
-        <div className="dashboard-grid">
-            <div className="stat-card"><h3>Total Stake</h3><p>{userInfo?.totalReward} P2P</p></div>
-            <div className="stat-card"><h3>Claimed Tokens</h3><p>{parseFloat(userInfo?.totalClaimed).toFixed(4)} P2P</p></div>
-            <div className="stat-card"><h3>Remaining Tokens</h3><p>{((userInfo?.totalReward || 0) - (userInfo?.totalClaimed || 0)).toFixed(4)} P2P</p></div>
-            <div className="stat-card"><h3>Lock Period Ends</h3><p style={{ fontSize: '16px' }}>{userInfo?.lockEndDate}</p></div>
-        </div>
-        <div className="action-card">
-            <h3>Claim Your Monthly Rewards</h3>
-            <p>You can claim 5% of your staked tokens every 30 days after the lock period ends.</p>
-            <button className="btn" onClick={onClaim}>Claim Now</button>
-        </div>
-    </>
-);
-
-const TeamView = ({ teamByLevel }) => {
-    const packageCost = 430;
-    const commissions = [40, 4, 4, 4, 4, 4, 4, 4, 4, 4];
-
-    return (
-        <div className="table-container">
-            <table className="history-table">
-                <thead>
-                    <tr>
-                        <th>Level</th>
-                        <th>Members</th>
-                        <th>Earnings (POL)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {teamByLevel.map((memberCount, index) => {
-                        const earnings = (memberCount * (packageCost * commissions[index] / 100));
-                        return (
-                            <tr key={index}>
-                                <td>Level {index + 1}</td>
-                                <td>{memberCount}</td>
-                                <td>{earnings.toFixed(2)}</td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-        </div>
-    );
-};
-
-
-const IncomeHistoryView = ({ history, currentUser }) => (
-    <div className="table-container">
-        <table className="history-table">
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>From</th>
-                    <th>Date</th>
-                    <th>Transaction</th>
-                </tr>
-            </thead>
-            <tbody>
-                {history && history.length > 0 ? (
-                    [...history].reverse().map((item, index) => (
-                        <tr key={index}>
-                            <td>{Number(item.incomeType) === 0 ? 'Commission' : 'Reward'}</td>
-                            <td>
-                                {parseFloat(ethers.formatUnits(item.amount, 18)).toFixed(4)}{' '}
-                                {Number(item.incomeType) === 0 ? 'POL' : 'P2P'}
-                            </td>
-                            <td>{Number(item.incomeType) === 0 ? `${item.fromUser.substring(0, 6)}...` : 'Self'}</td>
-                            <td>{new Date(Number(item.timestamp) * 1000).toLocaleDateString()}</td>
-                            <td>
-                                <a
-                                    href={`${POLYGON_SCAN_URL}/address/${currentUser}#internaltx`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="explorer-link"
-                                >
-                                    View
-                                </a>
-                            </td>
-                        </tr>
-                    ))
-                ) : (
-                    <tr>
-                        <td colSpan="5" style={{ textAlign: 'center' }}>
-                            No income history found.
-                        </td>
-                    </tr>
-                )}
-            </tbody>
-        </table>
+const PageHeader = () => (
+    <div className="page-header">
+        <span className="header-icon">🔲</span>
+        <span className="header-icon">🔔</span>
     </div>
 );
 
-const AwardsView = ({ directs, teamByLevel, onClaim }) => {
-    const awards = [
-        { id: 1, name: '10 Directs', required: 10, current: directs, reward: '3 P2P' },
-        { id: 2, name: '50 Team in Level 2', required: 50, current: teamByLevel[1] || 0, reward: '5 P2P' },
-        { id: 3, name: '150 Team in Level 3', required: 150, current: teamByLevel[2] || 0, reward: '15 P2P' },
-    ];
+const HomeTab = ({ userStats, isRegistered, onRegister }) => (
+    <>
+        <div className="welcome-card">
+            <div className="welcome-text">
+                <h2>Explore & Earn</h2>
+                <p>P2P Smartchain</p>
+            </div>
+            <div className="welcome-image"></div>
+        </div>
+        
+        <div className="stats-grid">
+            <StatBox icon="👥" title="My Team" value={userStats.directs || 0} />
+            <StatBox icon="💰" title="My Earnings" value={`${parseFloat(userStats.totalEarnings || 0).toFixed(2)} POL`} />
+            <StatBox icon="📦" title="Total Team" value={userStats.totalTeam || 0} />
+            <StatBox icon="📈" title="P2P Stake" value={"2.5"} />
+        </div>
 
-    return (
+        {!isRegistered && (
+            <div className="action-grid">
+                <button onClick={onRegister} className="action-button secondary" style={{ gridColumn: '1 / -1' }}>Buy Package</button>
+            </div>
+        )}
+    </>
+);
+
+const StatBox = ({ icon, title, value }) => (
+    <div className="stat-box">
+        <div className="icon">{icon}</div>
+        <div className="title">{title}</div>
+        <div className="value">{value}</div>
+    </div>
+);
+
+const TeamTab = ({ teamByLevel }) => (
+    <div className="page-container">
+        <h1 className="page-title">My Team</h1>
         <div className="table-container">
             <table className="history-table">
-                <thead>
-                    <tr>
-                        <th>Award</th>
-                        <th>Requirement</th>
-                        <th>Your Progress</th>
-                        <th>Remaining</th>
-                        <th>Reward</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Level</th><th>Members</th></tr></thead>
                 <tbody>
-                    {awards.map((award) => (
-                        <tr key={award.id}>
-                            <td>{award.name}</td>
-                            <td>{award.required}</td>
-                            <td>{award.current}</td>
-                            <td>{Math.max(0, award.required - award.current)}</td>
-                            <td>{award.reward}</td>
-                            <td>
-                                <button
-                                    className="btn"
-                                    onClick={() => onClaim(award.id)}
-                                    disabled={award.current < award.required}
-                                    style={{
-                                        padding: '8px 12px',
-                                        fontSize: '14px',
-                                        cursor:
-                                            award.current < award.required
-                                                ? 'not-allowed'
-                                                : 'pointer',
-                                        opacity: award.current < award.required ? 0.5 : 1,
-                                    }}
-                                >
-                                    Claim
-                                </button>
-                            </td>
+                    {teamByLevel.map((count, index) => (
+                        <tr className="list-item" key={index}>
+                            <td>Level {index + 1}</td>
+                            <td>{count} Members</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
         </div>
-    );
-};
+    </div>
+);
+
+const HistoryTab = ({ history, currentUser }) => (
+    <div className="page-container">
+        <h1 className="page-title">Income History</h1>
+        <div className="table-container">
+            <table className="history-table">
+                <thead><tr><th>Type</th><th>Amount</th><th>Date</th></tr></thead>
+                <tbody>
+                    {history && history.length > 0 ? [...history].reverse().map((item, index) => (
+                        <tr className="list-item" key={index}>
+                            <td>{Number(item.incomeType) === 0 ? 'Commission' : 'Reward'}</td>
+                            <td>
+                                {parseFloat(ethers.formatUnits(item.amount, 18)).toFixed(4)}
+                                {Number(item.incomeType) === 0 ? ' POL' : ' P2P'}
+                            </td>
+                            <td>{new Date(Number(item.timestamp) * 1000).toLocaleDateString()}</td>
+                        </tr>
+                    )) : <tr><td colSpan="3" style={{textAlign: 'center'}}>No history found.</td></tr>}
+                </tbody>
+            </table>
+        </div>
+    </div>
+);
+
+const ProfileTab = ({ onLogout, account }) => (
+    <div className="page-container">
+        <h1 className="page-title">Profile</h1>
+        <div className="list-item">
+            <span>Wallet Address</span>
+            <strong>{`${account.substring(0, 6)}...${account.substring(38)}`}</strong>
+        </div>
+        <div className="list-item">
+            <span>Referral Link</span>
+            <button className="action-button primary" style={{fontSize: '14px', padding: '10px 15px'}} onClick={() => {
+                const referralLink = `${window.location.origin}${window.location.pathname}?ref=${account}`;
+                navigator.clipboard.writeText(referralLink);
+                toast.success('Referral Link Copied!');
+            }}>Copy Link</button>
+        </div>
+        <div className="action-grid">
+             <button onClick={onLogout} className="action-button secondary" style={{ gridColumn: '1 / -1' }}>Logout</button>
+        </div>
+    </div>
+);
+
+const BottomNav = ({ activeTab, setActiveTab }) => (
+    <div className="bottom-nav">
+        <NavItem icon="🏠" label="Home" isActive={activeTab === 'Home'} onClick={() => setActiveTab('Home')} />
+        <NavItem icon="👥" label="Team" isActive={activeTab === 'Team'} onClick={() => setActiveTab('Team')} />
+        <NavItem icon="👤" label="Profile" isActive={activeTab === 'Profile'} onClick={() => setActiveTab('Profile')} />
+        <NavItem icon="📄" label="History" isActive={activeTab === 'History'} onClick={() => setActiveTab('History')} />
+    </div>
+);
+
+const NavItem = ({ icon, label, isActive, onClick }) => (
+    <button onClick={onClick} className={`nav-item ${isActive && 'active'}`}>
+        <span className="icon">{icon}</span>
+        <span>{label}</span>
+    </button>
+);
 
 export default App;
