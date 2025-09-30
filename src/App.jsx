@@ -592,7 +592,7 @@ const AboutSection = () => (
             <div className="info-card">
                 <h3>For Developers & Collaborators</h3>
                 <p>Opportunities are available for those who wish to work in our decentralized project or use our token to develop their own projects. Please tag us on our GitHub page.</p>
-                <a href="https://p2psmartchain.gitbook.io/p2p-smart-chain" target="_blank" rel="noopener noreferrer" className="whitepaper-btn">Read Our Whitepaper</a>
+                <a href="https://p2p-smart-chain.gitbook.io/p2psmartchain/documentation" target="_blank" rel="noopener noreferrer" className="whitepaper-btn">Read Our Whitepaper</a>
             </div>
         </div>
     </>
